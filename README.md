@@ -19,5 +19,6 @@
 4. Declare the method in typeDef > Query and it's return type
 5. Write the endpoint in resolvers under Query.
 
+> String! means that the field is non-nullable, meaning that the GraphQL service promises to always give you a value when you query this field. In the type language, we'll represent those with an exclamation mark.
 
 > A declaration describes an object, whereas a definition requests the creation of an object
