@@ -10,4 +10,21 @@ type Post{
   type Query{
      getPosts : [Post]
   }
+type User{
+  id:ID!
+  email:String!
+  token:String!
+  username:String!
+  createdAt:String!
+}
+  input RegisterInput{
+    email: String!
+    username:String!
+    password: String!
+    confirmPassword: String!
+  }
+type Mutation{
+  register(registerInput: RegisterInput): User!
+  login(username: String!, password:String!): User!
+}
 `;
