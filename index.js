@@ -8,7 +8,8 @@ const resolvers = require("./graphql/resolvers")
 
 const server = new ApolloServer({
     typeDefs,  // can be written as typeDefs:typeDefs but ES6 infers on it
-    resolvers  // Same as above ^
+    resolvers,  // Same as above ^
+    context: ({req})=>({req})
 })
 
 mongoose.connect(MONGODB,{useNewUrlParser:true,useUnifiedTopology: true,useCreateIndex: true})
