@@ -1,17 +1,83 @@
+const { AuthenticationError } = require('apollo-server');
 
 const Post = require("../../models/Post");
-
-module.exports ={
-    Query:{
-        async getPosts(){
-          // try and catch help your survive in handling else your app might stop
-          try{
-            const posts = await Post.find();
-            return posts;
-          }
-          catch(error){
-            throw new Error(error)
-          }
-        }
+const checkAuth = require('../../utils/check-auth');
+module.exports = {
+  Query: {
+    async getPosts() {
+      // try and catch help your survive in handling else your app might stop
+      try {
+        const posts = await Post.find();
+        return posts;
       }
-}
+      catch (error) {
+        throw new Error(error);
+      }
+    },
+    async getPost(_, { postId }) {
+      // try and catch help your survive in handling else your app might stop
+      // try{
+      //   const post = await Post.findById(postId);
+      //   console.log(post);
+      //  if (post) {
+      //    return post;
+      //   }
+      //  else{ 
+      //   console.log("not found");
+      //    throw new Error("Post not found");
+      //   }
+      // }
+      // catch(error){
+      // console.log(error)
+      //   throw new Error(error);
+      // }
+      try {
+        // const post = await Post.findOne({_id:postId});
+        const post = await Post.findById(postId);
+        if (post) {
+          return post;
+        } else {
+          throw new Error('Post not found');
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
+  },
+  Mutation: {
+    async createPost(_, { body }, context) {
+      const user = checkAuth(context);
+
+      const newPost = new Post({
+        body,
+        user: user.id,
+        username: user.username,
+        createdAt: new Date().toISOString()
+      });
+
+      const post = await newPost.save();
+
+      return post;
+    },
+    async deletePost(_, { postId }, context) {
+      const user = checkAuth(context);
+
+      const post = await Post.findById(postId);
+      try {
+        if (post.username === user.username) {
+
+          await post.delete();
+          return "Post deleted Successfully";
+        }
+        else{
+          throw new AuthenticationError('Action not allowed');
+        }
+      } catch(err) {
+        throw new Error(err);
+      }
+
+
+    }
+
+  }
+};
