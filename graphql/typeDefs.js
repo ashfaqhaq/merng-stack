@@ -8,7 +8,9 @@ type Post{
   username:String
 }
   type Query{
-     getPosts : [Post]
+     getPosts : [Post] 
+     getPost(postId:ID!) : Post
+    #  getPost(postId: ID!): Post 
   }
 type User{
   id:ID!
@@ -26,5 +28,7 @@ type User{
 type Mutation{
   register(registerInput: RegisterInput): User!
   login(username: String!, password:String!): User!
+  createPost(body: String!): Post!
+  deletePost(postId: ID!): String!
 }
 `;
