@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('apollo-server');
+const { AuthenticationError,UserInputError } = require('apollo-server');
 
 const Post = require("../../models/Post");
 const checkAuth = require('../../utils/check-auth');
@@ -16,21 +16,7 @@ module.exports = {
     },
     async getPost(_, { postId }) {
       // try and catch help your survive in handling else your app might stop
-      // try{
-      //   const post = await Post.findById(postId);
-      //   console.log(post);
-      //  if (post) {
-      //    return post;
-      //   }
-      //  else{ 
-      //   console.log("not found");
-      //    throw new Error("Post not found");
-      //   }
-      // }
-      // catch(error){
-      // console.log(error)
-      //   throw new Error(error);
-      // }
+      
       try {
         // const post = await Post.findOne({_id:postId});
         const post = await Post.findById(postId);
@@ -56,6 +42,9 @@ module.exports = {
       });
 
       const post = await newPost.save();
+      context.pubsub.publish('NEW_POST', {
+        newPost: post
+      });
 
       return post;
     },
@@ -100,5 +89,10 @@ module.exports = {
     }
   
 
+  },
+  Subscription: {
+    newPost: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator('NEW_POST')
+    }
   }
 };
