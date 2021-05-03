@@ -34,6 +34,7 @@ type User{
     id:ID!
     username:String!
     body:String!
+    createdAt: String!
   }
   type Like{
     id:ID!
