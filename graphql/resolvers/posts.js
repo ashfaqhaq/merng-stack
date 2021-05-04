@@ -7,7 +7,7 @@ module.exports = {
     async getPosts() {
       // try and catch help your survive in handling else your app might stop
       try {
-        const posts = await Post.find();
+        const posts = await Post.find().sort({ createdAt: -1 });
         return posts;
       }
       catch (error) {

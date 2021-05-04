@@ -7,32 +7,30 @@ import {useForm} from './../util/hooks';
 import {FETCH_POSTS_QUERY} from './../util/graphql'
 
 function PostForm() {
-
+ 
     const {onChange,values,onSubmit }= useForm(createPostCallback,{
         body:''
     });
 
-    const [createPost,{error}] = useMutation(CREATE_POST,{
-        variables:values,
-        update(proxy,result){
-            var data = proxy.readQuery({
-                query: FETCH_POSTS_QUERY
-              })
+    const [createPost, { error }] = useMutation(CREATE_POST, {
+      variables: values,
+      refetchQueries: [
+        { query: FETCH_POSTS_QUERY }
+      ],
+       update:(proxy, result)=> {
 
-              console.log(proxy.readQuery({
-                query: FETCH_POSTS_QUERY
-              }))
-              data.getPosts = [result.data.createPost, ...data.getPosts];
-              proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
-              values.body = '';
-        }
-       
-    });
-
-    function createPostCallback (){
-        createPost();
+         values.body = "";
+       },
+       onError(err) {
+        console.log(err)
+        console.log(error)
+        return err;
+      },
+    })
+  
+    function createPostCallback() {
+      createPost();
     }
-
     return (
         <div>
        <Form onSubmit={onSubmit}>
