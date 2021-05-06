@@ -39,7 +39,7 @@ function SinglePost(props) {
     }
   });
   
-  const { loading, data: { getPost: posts } = {} } = useQuery( FETCH_POST_QUERY , {
+  const {  data: { getPost: posts } = {} } = useQuery( FETCH_POST_QUERY , {
     variables: {
       postId
     }
